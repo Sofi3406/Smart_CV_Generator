@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0"
+    />
+    <title>SOFI— Professional CV Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700;800;900&family=Lato:wght@300;400;700;900&family=Raleway:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Source+Sans+3:wght@300;400;600;700;800;900&family=Nunito:wght@300;400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <link rel="stylesheet" href="cv_pro.css">
+  </head>
+  <body>
+    <script src="CV_Pro.js"></script>
+    <div class="app">
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-icon">CV</div>
+          <div>
+            <div class="brand-name">SOFI-CV <em>· Pro</em></div>
+            <div class="brand-sub">Ethiopian Professional CV Builder</div>
+          </div>
+        </div>
+        <div class="topbar-spacer"></div>
+        <button class="tbtn tbtn-ghost" onclick="importJSON()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"
+            />
+          </svg>
+          <span>Import</span>
+        </button>
+        <button class="tbtn tbtn-ghost" onclick="exportJSON()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+            />
+          </svg>
+          <span>Export</span>
+        </button>
+        <button class="tbtn tbtn-print" onclick="doPrint()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="6 9 6 2 18 2 18 9" />
+            <path
+              d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"
+            />
+            <rect x="6" y="14" width="12" height="8" />
+          </svg>
+          <span>Print / PDF</span>
+        </button>
+      </div>
+
+      <div class="main">
+        <aside class="sidebar">
+          <div class="stabs">
+            <button class="stab active" data-tab="personal">Personal</button>
+            <button class="stab" data-tab="sections">Sections</button>
+            <button class="stab" data-tab="xp">Experience</button>
+            <button class="stab" data-tab="edu">Education</button>
+            <button class="stab" data-tab="skills">Skills</button>
+            <button class="stab" data-tab="projects">Projects</button>
+            <button class="stab" data-tab="extra">Extra</button>
+            <button class="stab" data-tab="design">Design</button>
+            <button class="stab" data-tab="ats">ATS</button>
+          </div>
+
+          <!-- PERSONAL -->
+          <div class="spanel active" id="tab-personal">
+            <div class="pzone" id="pzone">
+              <input
+                type="file"
+                accept="image/*"
+                id="photoInput"
+                onchange="handlePhoto(event)"
+              />
+              <img
+                id="photoThumb"
+                class="pzone-thumb"
+                style="display: none"
+                alt="Profile photo"
+              />
+              <div id="pzonePh">
+                <svg
+                  style="
+                    width: 26px;
+                    height: 26px;
+                    color: #94a3b8;
+                    margin: 0 auto 4px;
+                    display: block;
+                  "
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <div class="pzone-hint">Click to upload photo</div>
+              </div>
+            </div>
+
+            <div class="opt-toggle" style="margin-top: 6px">
+              <input
+                type="checkbox"
+                id="optShowPhoto"
+                checked
+                onchange="
+                  S.showPhoto = this.checked;
+                  document
+                    .getElementById('pzone')
+                    .classList.toggle('ph-disabled', !this.checked);
+                  scheduleRender();
+                "
+              />
+              <label for="optShowPhoto">Show profile photo on CV</label>
+            </div>
+
+            <div class="shd" style="margin-top: 8px">Photo Position</div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 5px;
+                margin-bottom: 8px;
+              "
+            >
+              <button
+                onclick="setPhotoPos('left')"
+                id="ppLeft"
+                style="
+                  padding: 6px 4px;
+                  border-radius: 6px;
+                  border: 2px solid #e2e8f0;
+                  background: #f8fafc;
+                  cursor: pointer;
+                  font-size: 10px;
+                  font-weight: 700;
+                  color: #64748b;
+                  transition: 0.12s;
+                "
+              >
+                Left
+              </button>
+              <button
+                onclick="setPhotoPos('center')"
+                id="ppCenter"
+                style="
+                  padding: 6px 4px;
+                  border-radius: 6px;
+                  border: 2px solid #2563eb;
+                  background: #eff6ff;
+                  cursor: pointer;
+                  font-size: 10px;
+                  font-weight: 700;
+                  color: #2563eb;
+                  transition: 0.12s;
+                "
+              >
+                Center
+              </button>
+              <button
+                onclick="setPhotoPos('right')"
+                id="ppRight"
+                style="
+                  padding: 6px 4px;
+                  border-radius: 6px;
+                  border: 2px solid #e2e8f0;
+                  background: #f8fafc;
+                  cursor: pointer;
+                  font-size: 10px;
+                  font-weight: 700;
+                  color: #64748b;
+                  transition: 0.12s;
+                "
+              >
+                Right
+              </button>
+            </div>
+
+            <div class="shd">Name & Title</div>
+            <div class="frow">
+              <div class="fgroup">
+                <label>First Name</label
+                ><input
+                  id="f_fname"
+                  placeholder="First"
+                  oninput="scheduleRender()"
+                />
+              </div>
+              <div class="fgroup">
+                <label>Last Name</label
+                ><input
+                  id="f_lname"
+                  placeholder="Last"
+                  oninput="scheduleRender()"
+                />
+              </div>
+            </div>
+            <div class="fgroup">
+              <label>Job Title / Headline</label
+              ><input
+                id="f_title"
+                placeholder="Management Graduate | Business Analyst"
+                oninput="scheduleRender()"
+              />
+            </div>
+
+            <div class="shd">Contact Details</div>
+            <div class="frow">
+              <div class="fgroup">
+                <label>Email</label
+                ><input
+                  type="email"
+                  id="f_email"
+                  placeholder="you@email.com"
+                  oninput="scheduleRender()"
+                />
+              </div>
+              <div class="fgroup">
+                <label>Phone</label
+                ><input
+                  id="f_phone"
+                  placeholder="+251 9XX XXXXXX"
+                  oninput="scheduleRender()"
+                />
+              </div>
+            </div>
+            <div class="fgroup">
+              <label>Location / Address</label
+              ><input
+                id="f_location"
+                placeholder="Addis Ababa, Ethiopia"
+                oninput="scheduleRender()"
+              />
+            </div>
+
+            <div class="shd" style="margin-top: 12px">
+              🇪🇹 Optional Ethiopian Details
+            </div>
+            <div class="hint" style="margin-bottom: 7px">
+              Toggle on/off as needed for your application
+            </div>
+
+            <div class="opt-toggle">
+              <input
+                type="checkbox"
+                id="optShowPersonal"
+                checked
+                onchange="
+                  document
+                    .getElementById('optPersonalGroup')
+                    .classList.toggle('hidden', !this.checked);
+                  scheduleRender();
+                "
+              />
+              <label for="optShowPersonal"
+                >Show Gender, Nationality, Place of Birth, Date of Birth</label
+              >
+            </div>
+            <div class="opt-group" id="optPersonalGroup">
+              <div class="frow">
+                <div class="fgroup">
+                  <label>Gender</label>
+                  <select id="f_gender" onchange="scheduleRender()">
+                    <option value="">— Select —</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="fgroup">
+                  <label>Nationality</label>
+                  <select id="f_nationality" onchange="scheduleRender()">
+                    <option value="">— Select —</option>
+                    <option>Ethiopian</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="frow">
+                <div class="fgroup">
+                  <label>Place of Birth</label
+                  ><input
+                    id="f_birthplace"
+                    placeholder="e.g. Bale-Goba"
+                    oninput="scheduleRender()"
+                  />
+                </div>
+                <div class="fgroup">
+                  <label>Date of Birth</label
+                  ><input id="f_dob" type="date" oninput="scheduleRender()" />
+                </div>
+              </div>
+            </div>
+
+            <div class="opt-toggle">
+              <input
+                type="checkbox"
+                id="optShowEduLevels"
+                checked
+                onchange="
+                  document
+                    .getElementById('optEduGroup')
+                    .classList.toggle('hidden', !this.checked);
+                  scheduleRender();
+                "
+              />
+              <label for="optShowEduLevels"
+                >Show Primary, Secondary & Preparatory Education</label
+              >
+            </div>
+            <div class="opt-group" id="optEduGroup">
+              <div class="fgroup">
+                <label>Primary Education</label
+                ><input
+                  id="f_primary"
+                  placeholder="e.g. Goba Primary School, 2005–2010"
+                  oninput="scheduleRender()"
+                />
+              </div>
+              <div class="fgroup">
+                <label>Secondary Education</label
+                ><input
+                  id="f_secondary"
+                  placeholder="e.g. Goba Secondary School, 2010–2014"
+                  oninput="scheduleRender()"
+                />
+              </div>
+              <div class="fgroup">
+                <label>Preparatory School</label
+                ><input
+                  id="f_preparatory"
+                  placeholder="e.g. Goba Preparatory School, 2014–2016"
+                  oninput="scheduleRender()"
+                />
+              </div>
+            </div>
+
+            <div class="shd">Professional Summary</div>
+            <div class="fgroup">
+              <textarea
+                id="f_summary"
+                rows="5"
+                placeholder="Results-driven management graduate…"
+                oninput="scheduleRender()"
+              ></textarea>
+              <div class="hint">
+                3–5 sentences with your job title keyword for ATS.
+              </div>
+            </div>
+
+            <div class="shd">Social & Online</div>
+            <div class="frow">
+              <div class="fgroup">
+                <label>LinkedIn</label
+                ><input
+                  id="f_linkedin"
+                  placeholder="linkedin.com/in/you"
+                  oninput="scheduleRender()"
+                />
+              </div>
+              <div class="fgroup">
+                <label>GitHub</label
+                ><input
+                  id="f_github"
+                  placeholder="github.com/you"
+                  oninput="scheduleRender()"
+                />
+              </div>
+            </div>
+            <div class="frow">
+              <div class="fgroup">
+                <label>Portfolio</label
+                ><input
+                  id="f_website"
+                  placeholder="yoursite.com"
+                  oninput="scheduleRender()"
+                />
+              </div>
+              <div class="fgroup">
+                <label>Telegram</label
+                ><input
+                  id="f_telegram"
+                  placeholder="t.me/you"
+                  oninput="scheduleRender()"
+                />
+              </div>
+            </div>
+            <div class="frow3">
+              <div class="fgroup">
+                <label>Facebook</label
+                ><input
+                  id="f_facebook"
+                  placeholder="facebook.com/you"
+                  oninput="scheduleRender()"
+                />
+              </div>
+              <div class="fgroup">
+                <label>YouTube</label
+                ><input
+                  id="f_youtube"
+                  placeholder="youtube.com/@you"
+                  oninput="scheduleRender()"
+                />
+              </div>
+              <div class="fgroup">
+                <label>Instagram</label
+                ><input
+                  id="f_instagram"
+                  placeholder="instagram.com/you"
+                  oninput="scheduleRender()"
+                />
+              </div>
+            </div>
+            <div class="frow">
+              <div class="fgroup">
+                <label>Twitter / X</label
+                ><input
+                  id="f_twitter"
+                  placeholder="twitter.com/you"
+                  oninput="scheduleRender()"
+                />
+              </div>
+              <div class="fgroup">
+                <label>TikTok</label
+                ><input
+                  id="f_tiktok"
+                  placeholder="tiktok.com/@you"
+                  oninput="scheduleRender()"
+                />
+              </div>
+            </div>
+
+            <div class="comp-box">
+              <div class="comp-row">
+                <span>Profile completeness</span><span id="compPct">0%</span>
+              </div>
+              <div class="comp-track">
+                <div class="comp-fill" id="compFill" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div style="margin-top: 10px">
+              <button
+                class="add-btn"
+                style="
+                  background: #dbeafe;
+                  border-color: #3b82f6;
+                  color: #1e40af;
+                  border-style: solid;
+                "
+                onclick="loadSampleData()"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  width="12"
+                  height="12"
+                >
+                  <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />
+                </svg>
+                Load BSc Arts in Management Sample CV
+              </button>
+            </div>
+          </div>
+
+          <!-- SECTIONS -->
+          <div class="spanel" id="tab-sections">
+            <div class="shd" style="margin-top: 0">
+              Drag to Reorder · Toggle · Column
+            </div>
+            <div class="sec-list" id="secList"></div>
+          </div>
+
+          <!-- EXPERIENCE -->
+          <div class="spanel" id="tab-xp">
+            <div class="shd" style="margin-top: 0">Work Experience</div>
+            <div class="ilist" id="xpList"></div>
+            <button class="add-btn" onclick="addXP()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" /></svg
+              >Add Experience
+            </button>
+          </div>
+
+          <!-- EDUCATION -->
+          <div class="spanel" id="tab-edu">
+            <div class="shd" style="margin-top: 0">Education</div>
+            <div class="ilist" id="eduList"></div>
+            <button class="add-btn" onclick="addEdu()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" /></svg
+              >Add Education
+            </button>
+            <div class="shd">Certifications</div>
+            <div class="ilist" id="certList"></div>
+            <button class="add-btn" onclick="addCert()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" /></svg
+              >Add Certification
+            </button>
+            <div class="shd">Languages</div>
+            <div class="ilist" id="langList"></div>
+            <button class="add-btn" onclick="addLang()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" /></svg
+              >Add Language
+            </button>
+          </div>
+
+          <!-- SKILLS -->
+          <div class="spanel" id="tab-skills">
+            <div class="shd" style="margin-top: 0">Technical Skills</div>
+            <div class="ilist" id="techList"></div>
+            <button class="add-btn" onclick="addSkill('tech')">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" /></svg
+              >Add Technical Skill
+            </button>
+            <div class="shd">Soft Skills</div>
+            <div class="ilist" id="softList"></div>
+            <button class="add-btn" onclick="addSkill('soft')">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" /></svg
+              >Add Soft Skill
+            </button>
+            <div class="shd">Hobbies & Interests</div>
+            <div class="fgroup" style="margin-top: 6px">
+              <textarea
+                id="f_hobbies"
+                rows="3"
+                placeholder="Strategic Planning, Public Speaking, Reading"
+                oninput="scheduleRender()"
+              ></textarea>
+              <div class="hint">Comma-separated list</div>
+            </div>
+          </div>
+
+          <!-- PROJECTS -->
+          <div class="spanel" id="tab-projects">
+            <div class="shd" style="margin-top: 0">Projects</div>
+            <div class="ilist" id="projList"></div>
+            <button class="add-btn" onclick="addProj()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" /></svg
+              >Add Project
+            </button>
+          </div>
+
+          <!-- EXTRA -->
+          <div class="spanel" id="tab-extra">
+            <div class="shd" style="margin-top: 0">Custom Sections</div>
+            <div class="hint" style="margin-bottom: 8px">
+              References, Awards, Volunteering, Publications…
+            </div>
+            <div class="ilist" id="customList"></div>
+            <button class="add-btn" onclick="addCustom()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" /></svg
+              >Add Custom Section
+            </button>
+            <div class="shd" style="margin-top: 12px">References</div>
+            <div class="opt-toggle" style="margin-bottom: 6px">
+              <input
+                type="checkbox"
+                id="optShowReferences"
+                checked
+                onchange="
+                  S.optReferences = this.checked;
+                  scheduleRender();
+                "
+              />
+              <label for="optShowReferences">Show References Section</label>
+            </div>
+            <div class="ilist" id="refList"></div>
+            <button class="add-btn" onclick="addRef()">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" /></svg
+              >Add Reference
+            </button>
+          </div>
+
+          <!-- DESIGN -->
+          <div class="spanel" id="tab-design">
+            <div class="shd" style="margin-top: 0" id="tplCountLabel">
+              Template (45 Layouts)
+            </div>
+            <div class="tgrid" id="tgrid"></div>
+            <div class="shd">Accent Color</div>
+            <div class="cswatches" id="cswatches"></div>
+            <div class="shd">Typography</div>
+            <div class="fgroup">
+              <label>Font Family</label>
+              <select
+                id="fontSel"
+                onchange="
+                  S.font = this.value;
+                  scheduleRender();
+                "
+              >
+                <option value="">Template Default</option>
+                <option value="Inter">Inter — Modern</option>
+                <option value="Lato">Lato — Professional</option>
+                <option value="Raleway">Raleway — Elegant</option>
+                <option value="Montserrat">Montserrat — Bold</option>
+                <option value="Poppins">Poppins — Friendly</option>
+                <option value="Playfair Display">
+                  Playfair Display — Classic Serif
+                </option>
+                <option value="Merriweather">
+                  Merriweather — Authoritative
+                </option>
+                <option value="Source Sans 3">Source Sans 3 — Clean</option>
+                <option value="Nunito">Nunito — Rounded</option>
+                <option value="DM Sans">DM Sans — Contemporary</option>
+              </select>
+            </div>
+            <div class="fgroup">
+              <label>Name Size (px)</label>
+              <div class="range-row">
+                <input
+                  type="range"
+                  min="16"
+                  max="36"
+                  step="1"
+                  id="nameSzSel"
+                  oninput="
+                    S.nameSz = +this.value;
+                    document.getElementById('nameSzVal').textContent =
+                      this.value + 'px';
+                    scheduleRender();
+                  "
+                /><span class="range-val" id="nameSzVal">24px</span>
+              </div>
+            </div>
+            <div class="fgroup">
+              <label>Name Weight</label>
+              <select
+                id="nameWtSel"
+                onchange="
+                  S.nameWt = this.value;
+                  scheduleRender();
+                "
+              >
+                <option value="600">Semi-Bold (600)</option>
+                <option value="700">Bold (700)</option>
+                <option value="800" selected>Extra-Bold (800)</option>
+                <option value="900">Black (900)</option>
+              </select>
+            </div>
+            <div class="fgroup">
+              <label>Title Size (px)</label>
+              <div class="range-row">
+                <input
+                  type="range"
+                  min="9"
+                  max="18"
+                  step="1"
+                  id="titleSzSel"
+                  oninput="
+                    S.titleSz = +this.value;
+                    document.getElementById('titleSzVal').textContent =
+                      this.value + 'px';
+                    scheduleRender();
+                  "
+                /><span class="range-val" id="titleSzVal">11px</span>
+              </div>
+            </div>
+            <div class="fgroup">
+              <label>Body Size (px)</label>
+              <div class="range-row">
+                <input
+                  type="range"
+                  min="8"
+                  max="13"
+                  step="0.5"
+                  id="bodySzSel"
+                  oninput="
+                    S.bodySz = +this.value;
+                    document.getElementById('bodySzVal').textContent =
+                      this.value + 'px';
+                    scheduleRender();
+                  "
+                /><span class="range-val" id="bodySzVal">10px</span>
+              </div>
+            </div>
+            <div class="fgroup">
+              <label>Section Header Size (px)</label>
+              <div class="range-row">
+                <input
+                  type="range"
+                  min="7"
+                  max="13"
+                  step="0.5"
+                  id="secSzSel"
+                  oninput="
+                    S.secSz = +this.value;
+                    document.getElementById('secSzVal').textContent =
+                      this.value + 'px';
+                    scheduleRender();
+                  "
+                /><span class="range-val" id="secSzVal">9.5px</span>
+              </div>
+            </div>
+            <div class="shd">Spacing & Layout</div>
+            <div class="fgroup">
+              <label>Section Gap (px)</label>
+              <div class="range-row">
+                <input
+                  type="range"
+                  min="0"
+                  max="20"
+                  step="1"
+                  id="secGapSel"
+                  oninput="
+                    S.secGap = +this.value;
+                    document.getElementById('secGapVal').textContent =
+                      this.value + 'px';
+                    scheduleRender();
+                  "
+                /><span class="range-val" id="secGapVal">8px</span>
+              </div>
+            </div>
+            <div class="fgroup">
+              <label>Divider Lines</label>
+              <select
+                id="hrSel"
+                onchange="
+                  S.showHR = this.value === 'yes';
+                  scheduleRender();
+                "
+              >
+                <option value="yes">Yes — show dividing lines</option>
+                <option value="no">No — clean spacing only</option>
+              </select>
+            </div>
+            <div class="fgroup">
+              <label>Photo Shape</label>
+              <select
+                id="photoShapeSel"
+                onchange="
+                  S.photoShape = this.value;
+                  scheduleRender();
+                "
+              >
+                <option value="circle">Circle</option>
+                <option value="round">Rounded Square</option>
+                <option value="square">Square</option>
+              </select>
+            </div>
+            <div class="fgroup">
+              <label>Photo Size (px)</label>
+              <div class="range-row">
+                <input
+                  type="range"
+                  min="60"
+                  max="130"
+                  step="5"
+                  id="photoSzSel"
+                  oninput="
+                    S.photoSz = +this.value;
+                    document.getElementById('photoSzVal').textContent =
+                      this.value + 'px';
+                    scheduleRender();
+                  "
+                /><span class="range-val" id="photoSzVal">88px</span>
+              </div>
+            </div>
+            <div class="fgroup">
+              <label>Left Column Width</label>
+              <select
+                id="colWSel"
+                onchange="
+                  S.colW = this.value;
+                  scheduleRender();
+                "
+              >
+                <option value="190px">Narrow (190px)</option>
+                <option value="215px" selected>Default (215px)</option>
+                <option value="240px">Wide (240px)</option>
+                <option value="265px">Extra Wide (265px)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- ATS -->
+          <div class="spanel" id="tab-ats">
+            <div class="shd" style="margin-top: 0">ATS Score Checker</div>
+            <div class="ats-wrap">
+              <div class="ats-ring">
+                <svg viewBox="0 0 56 56">
+                  <circle class="ats-bg" cx="28" cy="28" r="22" />
+                  <circle
+                    class="ats-fg"
+                    id="atsFg"
+                    cx="28"
+                    cy="28"
+                    r="22"
+                    stroke-dasharray="138.23"
+                    stroke-dashoffset="138.23"
+                  />
+                </svg>
+                <div class="ats-ov">
+                  <div class="ats-num" id="atsNum">—</div>
+                  <div class="ats-lbl">/ 100</div>
+                </div>
+              </div>
+              <div style="flex: 1">
+                <div
+                  style="font-size: 13px; font-weight: 800; margin-bottom: 2px"
+                  id="atsLabel"
+                >
+                  —
+                </div>
+                <div
+                  style="font-size: 10px; color: #64748b; margin-bottom: 7px"
+                >
+                  ATS Compatibility Score
+                </div>
+                <button
+                  class="add-btn"
+                  style="
+                    width: auto;
+                    padding: 4px 12px;
+                    background: #2563eb;
+                    border-color: #2563eb;
+                    color: #fff;
+                    border-style: solid;
+                    border-radius: 6px;
+                  "
+                  onclick="runATS()"
+                >
+                  Run ATS Check
+                </button>
+              </div>
+            </div>
+            <div class="ats-checks" id="atsChecks"></div>
+          </div>
+        </aside>
+
+        <!-- PREVIEW -->
+        <div class="preview-area">
+          <div class="preview-bar">
+            <span class="pv-label">LIVE PREVIEW</span>
+            <div class="page-badge" id="pageBadge">A4 · 1 page</div>
+            <div class="pv-spacer"></div>
+            <button class="zbtn" onclick="zoom(-0.08)">−</button>
+            <span class="zval" id="zval">72%</span>
+            <button class="zbtn" onclick="zoom(0.08)">+</button>
+            <button
+              class="zbtn"
+              onclick="zoom(0)"
+              style="
+                font-size: 10px;
+                width: auto;
+                padding: 0 7px;
+                font-weight: 700;
+              "
+            >
+              Fit
+            </button>
+          </div>
+          <div class="preview-scroll" id="pvScroll">
+            <div class="cv-wrap" id="cvWrap">
+              <div id="cvDoc"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
+      </svg>
+      <span id="toastMsg"></span>
+    </div>
+    <input
+      type="file"
+      id="importFile"
+      accept=".json"
+      style="display: none"
+      onchange="handleImport(event)"
+    />
+
+    
+  </body>
+</html>
